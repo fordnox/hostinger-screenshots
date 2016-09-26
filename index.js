@@ -16,16 +16,21 @@ app.get('/', function (request, response) {
 });
 
 app.get('/w/:app', function (req, res) {
-    console.log('app ' + req.params.app);
-    var filename = './' + req.params.app + '.png';
+    var app = req.params.app;
+    var filename = './tmp/' + app + '.png';
+    console.log('file:  ' + filename);
 
     screenshot({
-        url: 'https://' + req.params.app + '.000webhostapp.com',
+        url: 'http://' + app + '.000webhostapp.com',
         width: 1024,
         height: 768
     })
         .then(function (buffer) {
-            fs.writeFile(filename, buffer, function () {
+            console.log('screenshot done');
+            fs.writeFile(filename, buffer, function (err) {
+                console.log('writing file');
+                if (err) throw err;
+                console.log('It\'s saved!');
                 // This will close the screenshot service
                 screenshot.close();
                 res.contentType(filename);
